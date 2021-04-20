@@ -26,63 +26,71 @@ public class ProductoController {
 
 	@Autowired
 	private ProductoService productoService;
-	
+
 	// Crear nuevo Producto
 	@PostMapping
 	public ResponseEntity<?> create(@RequestBody Producto producto) {
 		return ResponseEntity.status(HttpStatus.CREATED).body(productoService.save(producto));
 	}
-	
-	// Leer un Producto	
+
+	// Leer un Producto
 	@GetMapping("/{id}")
 	public ResponseEntity<?> read(@PathVariable Long id) {
 		Optional<Producto> oProducto = productoService.findById(id);
-		
-		if(!oProducto.isPresent()) {
+
+		if (!oProducto.isPresent()) {
 			return ResponseEntity.notFound().build();
 		}
-		
+
 		return ResponseEntity.ok(oProducto);
 	}
-	
+
 	// Actualizar un Producto
-		@PutMapping("/{id}")
-		public ResponseEntity<?> update(@RequestBody Producto productoDetails, @PathVariable(value = "id") Long id) {
-			Optional<Producto> oProducto = productoService.findById(id);
-			
-			if(!oProducto.isPresent()) {
-				return ResponseEntity.notFound().build();
-			}			
-			
-			oProducto.get().setNombre(productoDetails.getNombre());
-			oProducto.get().setDescripcion(productoDetails.getDescripcion());
-			oProducto.get().setCategoria(productoDetails.getCategoria());
-			oProducto.get().setCantidad(productoDetails.getCantidad());
-			
-			return ResponseEntity.status(HttpStatus.CREATED).body(productoService.save(oProducto.get()));		
-			
+	@PutMapping("/{id}")
+	public ResponseEntity<?> update(@RequestBody Producto productoDetails, @PathVariable(value = "id") Long id) {
+		Optional<Producto> oProducto = productoService.findById(id);
+
+		if (!oProducto.isPresent()) {
+			return ResponseEntity.notFound().build();
 		}
-		
-		// Eliminar un Producto
-		@DeleteMapping("/{id}")
-		public ResponseEntity<?> delete(@PathVariable Long id) {
-				
-			if(!productoService.findById(id).isPresent()) {
-				return ResponseEntity.notFound().build();
-			}
-				
-			productoService.deleteById(id);
-			return ResponseEntity.ok().build();
+
+		oProducto.get().setNombre(productoDetails.getNombre());
+		oProducto.get().setDescripcion(productoDetails.getDescripcion());
+		oProducto.get().setCategoria(productoDetails.getCategoria());
+		oProducto.get().setCantidad(productoDetails.getCantidad());
+
+		return ResponseEntity.status(HttpStatus.CREATED).body(productoService.save(oProducto.get()));
+
+	}
+
+	// Eliminar un Producto
+	@DeleteMapping("/{id}")
+	public ResponseEntity<?> delete(@PathVariable Long id) {
+
+		if (!productoService.findById(id).isPresent()) {
+			return ResponseEntity.notFound().build();
 		}
-		
-		// Leer todos los Productos
-		@GetMapping
-		public List<Producto> readAll() {
-			List<Producto> productos = StreamSupport
-					.stream(productoService.findAll().spliterator(), false)
-					.collect(Collectors.toList());
-			
-			return productos;
-		}
-				
+
+		productoService.deleteById(id);
+		return ResponseEntity.ok().build();
+	}
+
+	// Leer todos los Productos
+	@GetMapping
+	public List<Producto> readAll() {
+		List<Producto> productos = StreamSupport.stream(productoService.findAll().spliterator(), false)
+				.collect(Collectors.toList());
+
+		return productos;
+	}
+
+	// Leer todos los Productos de una categoria
+
+	@GetMapping("/{id}/productos")
+	public List<Producto> findByCategoriaId(@PathVariable Long id) {
+		List<Producto> productos = productoService.findByCategoria(id);
+
+		return productos;
+	}
+
 }
