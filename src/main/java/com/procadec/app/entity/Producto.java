@@ -24,9 +24,8 @@ public class Producto implements Serializable{
 	
 	@Column(nullable = false, length = 200)
 	private String descripcion;
-	
-	@Column(length = 50)
-	private String categoria;
+		
+	private Long categoria;
 	
 	@Column(nullable = false)
 	private int cantidad;
@@ -55,11 +54,11 @@ public class Producto implements Serializable{
 		this.descripcion = descripcion;
 	}
 
-	public String getCategoria() {
+	public Long getCategoria() {
 		return categoria;
 	}
 
-	public void setCategoria(String categoria) {
+	public void setCategoria(Long categoria) {
 		this.categoria = categoria;
 	}
 
