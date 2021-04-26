@@ -2,8 +2,6 @@ package com.procadec.app.contoller;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,18 +24,49 @@ public class UsuarioController {
 
 	@Autowired
 	private UsuarioService usuarioService;
+	
+	// Los siguientes métodos correspondientes a endpoints estarían abiertos
 
 	// Crear un nuevo Usuario
 	@PostMapping
-	public ResponseEntity<?> create(@RequestBody Usuario usuario) {
+	public ResponseEntity<?> create(@RequestBody Usuario usuarioDetails) {
+				
+		List<Usuario> usuarios = (List<Usuario>) usuarioService.findAll();
 		
-		// Comprobar que no existe el Usuario ya
+		// Comprobamos que existe el Usuario en la base de datos
+		for (Usuario usuario : usuarios) {
+			if(usuario.getEmail().equals(usuarioDetails.getEmail())) {
+				return ResponseEntity.ok().build();
+			}
+		}		
 		
+		usuarioService.save(usuarioDetails);
 		
-		return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.save(usuario));
+		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
+	
+	// Iniciar sesión
+		@GetMapping("/login")
+		public ResponseEntity<?> login(@RequestBody Usuario usuarioDetails) {
+			List<Usuario> usuarios = (List<Usuario>) usuarioService.findAll();
+			
+			// Comprobamos que existe el Usuario en la base de datos
+			for (Usuario usuario : usuarios) {
+				if(usuario.getEmail().equals(usuarioDetails.getEmail()) && 
+						usuario.getContrasenia().equals(usuarioDetails.getContrasenia())) {
+					return ResponseEntity.ok().build();
+				}
+			}		
 
-	// Leer un Usuario
+			return ResponseEntity.notFound().build();
+
+		}
+		
+	/* Los siguientes métodos correspondientes a endpoints solo se deberían utilizar para administración
+	 * En una versión futura habria que desdoblar el fichero y su ruta en /api/usuarios y /api/admin/usuarios
+	 * De momento se mantiene así para hacer pruebas. */
+
+	// Leer un Usuario. 
 	@GetMapping("/{id}")
 	public ResponseEntity<?> read(@PathVariable Long id) {
 		Optional<Usuario> usuario = usuarioService.findById(id);
@@ -49,7 +78,7 @@ public class UsuarioController {
 		return ResponseEntity.ok(usuario);
 	}
 
-	// Actualizar un Usuario
+	// Actualizar un Usuario. 
 	@PutMapping("/{id}")
 	public ResponseEntity<?> update(@RequestBody Usuario usuarioDetails, @PathVariable Long id) {
 		Optional<Usuario> usuario = usuarioService.findById(id);
@@ -64,7 +93,7 @@ public class UsuarioController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.save(usuario.get()));
 	}
 
-	// Eliminar un Usuario
+	// Eliminar un Usuario. 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
 
@@ -76,30 +105,15 @@ public class UsuarioController {
 		return ResponseEntity.ok().build();
 	}
 
-	// Leer todos los Usuarios
+	// Leer todos los Usuarios.
 	@GetMapping
 	public List<Usuario> readAll() {
-		List<Usuario> usuarios = StreamSupport.stream(usuarioService.findAll().spliterator(), false)
-				.collect(Collectors.toList());
-		// List<Usuario> usuarios = (List<Usuario>) usuarioService.findAll();
+		
+		List<Usuario> usuarios = (List<Usuario>) usuarioService.findAll();
 
 		return usuarios;
 	}
 
-	// Iniciar sesión
-	@GetMapping("/login")
-	public ResponseEntity<?> login(@RequestBody Usuario usuarioDetails) {
-		List<Usuario> usuarios = (List<Usuario>) usuarioService.findAll();
-		
-		for (Usuario usuario : usuarios) {
-			if(usuario.getEmail().equals(usuarioDetails.getEmail()) && 
-					usuario.getContrasenia().equals(usuarioDetails.getContrasenia())) {
-				return ResponseEntity.ok().build();
-			}
-		}		
-
-		return ResponseEntity.notFound().build();
-
-	}
+	
 
 }

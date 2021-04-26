@@ -9,6 +9,5 @@ import com.procadec.app.entity.Producto;
 
 @Repository
 public interface ProductoRepository extends JpaRepository<Producto, Long> {
-	
-	List<Producto> findByCategoria(Long categoria);
+		
 }
