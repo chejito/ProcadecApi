@@ -23,63 +23,83 @@ import com.procadec.app.service.UsuarioService;
 @RestController
 @RequestMapping("/api/usuarios")
 public class UsuarioController {
-	
+
 	@Autowired
 	private UsuarioService usuarioService;
-	
+
 	// Crear un nuevo Usuario
 	@PostMapping
 	public ResponseEntity<?> create(@RequestBody Usuario usuario) {
+		
+		// Comprobar que no existe el Usuario ya
+		
+		
 		return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.save(usuario));
 	}
-	
+
 	// Leer un Usuario
 	@GetMapping("/{id}")
 	public ResponseEntity<?> read(@PathVariable Long id) {
-		Optional<Usuario> oUsuario = usuarioService.findById(id);
-		
-		if(!oUsuario.isPresent()) {
+		Optional<Usuario> usuario = usuarioService.findById(id);
+
+		if (!usuario.isPresent()) {
 			return ResponseEntity.notFound().build();
 		}
-		
-		return ResponseEntity.ok(oUsuario);
+
+		return ResponseEntity.ok(usuario);
 	}
-	
+
 	// Actualizar un Usuario
 	@PutMapping("/{id}")
-	public ResponseEntity<?> update(@RequestBody Usuario usuarioDetails, @PathVariable(value = "id") Long id) {
-		Optional<Usuario> oUsuario = usuarioService.findById(id);
+	public ResponseEntity<?> update(@RequestBody Usuario usuarioDetails, @PathVariable Long id) {
+		Optional<Usuario> usuario = usuarioService.findById(id);
 		
-		if(!oUsuario.isPresent()) {
+		if(!usuario.isPresent()) {
 			return ResponseEntity.notFound().build();
 		}
 		
-		oUsuario.get().setNombre(usuarioDetails.getNombre());
-		oUsuario.get().setContrasenia(usuarioDetails.getContrasenia());
+		usuario.get().setNombre(usuarioDetails.getNombre());
+		usuario.get().setContrasenia(usuarioDetails.getContrasenia());
 		
-		return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.save(oUsuario.get()));
+		return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.save(usuario.get()));
 	}
 
 	// Eliminar un Usuario
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
-		
-		if(!usuarioService.findById(id).isPresent()) {
+
+		if (!usuarioService.findById(id).isPresent()) {
 			return ResponseEntity.notFound().build();
 		}
-		
+
 		usuarioService.deleteById(id);
 		return ResponseEntity.ok().build();
 	}
-	
+
 	// Leer todos los Usuarios
 	@GetMapping
 	public List<Usuario> readAll() {
-		List<Usuario> usuarios = StreamSupport
-				.stream(usuarioService.findAll().spliterator(), false)
+		List<Usuario> usuarios = StreamSupport.stream(usuarioService.findAll().spliterator(), false)
 				.collect(Collectors.toList());
-		
+		// List<Usuario> usuarios = (List<Usuario>) usuarioService.findAll();
+
 		return usuarios;
+	}
+
+	// Iniciar sesión
+	@GetMapping("/login")
+	public ResponseEntity<?> login(@RequestBody Usuario usuarioDetails) {
+		List<Usuario> usuarios = (List<Usuario>) usuarioService.findAll();
+		
+		for (Usuario usuario : usuarios) {
+			if(usuario.getEmail().equals(usuarioDetails.getEmail()) && 
+					usuario.getContrasenia().equals(usuarioDetails.getContrasenia())) {
+				return ResponseEntity.ok().build();
+			}
+		}		
+
+		return ResponseEntity.notFound().build();
+
 	}
 
 }

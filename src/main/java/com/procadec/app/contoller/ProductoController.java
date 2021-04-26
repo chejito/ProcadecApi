@@ -47,7 +47,7 @@ public class ProductoController {
 
 	// Actualizar un Producto
 	@PutMapping("/{id}")
-	public ResponseEntity<?> update(@RequestBody Producto productoDetails, @PathVariable(value = "id") Long id) {
+	public ResponseEntity<?> update(@RequestBody Producto productoDetails, @PathVariable Long id) {
 		Optional<Producto> oProducto = productoService.findById(id);
 
 		if (!oProducto.isPresent()) {
@@ -55,8 +55,7 @@ public class ProductoController {
 		}
 
 		oProducto.get().setNombre(productoDetails.getNombre());
-		oProducto.get().setDescripcion(productoDetails.getDescripcion());
-		oProducto.get().setCategoria(productoDetails.getCategoria());
+		oProducto.get().setDescripcion(productoDetails.getDescripcion());		
 		oProducto.get().setCantidad(productoDetails.getCantidad());
 
 		return ResponseEntity.status(HttpStatus.CREATED).body(productoService.save(oProducto.get()));
@@ -82,15 +81,6 @@ public class ProductoController {
 				.collect(Collectors.toList());
 
 		return productos;
-	}
-
-	// Leer todos los Productos de una categoria
-
-	@GetMapping("/{id}/productos")
-	public List<Producto> findByCategoriaId(@PathVariable Long id) {
-		List<Producto> productos = productoService.findByCategoria(id);
-
-		return productos;
-	}
+	}	
 
 }

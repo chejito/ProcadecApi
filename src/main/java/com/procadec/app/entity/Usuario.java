@@ -22,6 +22,9 @@ public class Usuario implements Serializable{
 	@Column(nullable = false, length = 50)
 	private String nombre;
 	
+	@Column(nullable = false, length = 50, unique = true)
+	private String email;
+	
 	@Column(nullable = false, length = 50)
 	private String contrasenia;
 
@@ -39,6 +42,14 @@ public class Usuario implements Serializable{
 
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
+	}	
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public String getContrasenia() {
