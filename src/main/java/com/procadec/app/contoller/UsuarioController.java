@@ -47,7 +47,7 @@ public class UsuarioController {
 	}
 
 	// Iniciar sesión
-	@GetMapping("/login")
+	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody Usuario usuarioDetails) {
 		List<Usuario> usuarios = (List<Usuario>) usuarioService.findAll();
 
