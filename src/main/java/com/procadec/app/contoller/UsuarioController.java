@@ -24,44 +24,45 @@ public class UsuarioController {
 
 	@Autowired
 	private UsuarioService usuarioService;
-	
+
 	// Los siguientes métodos correspondientes a endpoints estarían abiertos
+
 
 	// Crear un nuevo Usuario
 	@PostMapping
 	public ResponseEntity<?> create(@RequestBody Usuario usuarioDetails) {
-				
+
 		List<Usuario> usuarios = (List<Usuario>) usuarioService.findAll();
-		
+
 		// Comprobamos que existe el Usuario en la base de datos
 		for (Usuario usuario : usuarios) {
 			if(usuario.getEmail().equals(usuarioDetails.getEmail())) {
 				return ResponseEntity.ok().build();
 			}
 		}		
-		
+
 		usuarioService.save(usuarioDetails);
-		
+
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
-	
+
 	// Iniciar sesión
-		@GetMapping("/login")
-		public ResponseEntity<?> login(@RequestBody Usuario usuarioDetails) {
-			List<Usuario> usuarios = (List<Usuario>) usuarioService.findAll();
-			
-			// Comprobamos que existe el Usuario en la base de datos
-			for (Usuario usuario : usuarios) {
-				if(usuario.getEmail().equals(usuarioDetails.getEmail()) && 
-						usuario.getContrasenia().equals(usuarioDetails.getContrasenia())) {
-					return ResponseEntity.ok().build();
-				}
-			}		
+	@GetMapping("/login")
+	public ResponseEntity<?> login(@RequestBody Usuario usuarioDetails) {
+		List<Usuario> usuarios = (List<Usuario>) usuarioService.findAll();
 
-			return ResponseEntity.notFound().build();
+		// Comprobamos que existe el Usuario en la base de datos
+		for (Usuario usuario : usuarios) {
+			if(usuario.getNombre().equals(usuarioDetails.getNombre()) && 
+					usuario.getContrasenia().equals(usuarioDetails.getContrasenia())) {
+				return ResponseEntity.ok().build();
+			}
+		}		
 
-		}
-		
+		return ResponseEntity.notFound().build();
+
+	}
+
 	/* Los siguientes métodos correspondientes a endpoints solo se deberían utilizar para administración
 	 * En una versión futura habria que desdoblar el fichero y su ruta en /api/usuarios y /api/admin/usuarios
 	 * De momento se mantiene así para hacer pruebas. */
@@ -82,14 +83,14 @@ public class UsuarioController {
 	@PutMapping("/{id}")
 	public ResponseEntity<?> update(@RequestBody Usuario usuarioDetails, @PathVariable Long id) {
 		Optional<Usuario> usuario = usuarioService.findById(id);
-		
+
 		if(!usuario.isPresent()) {
 			return ResponseEntity.notFound().build();
 		}
-		
+
 		usuario.get().setNombre(usuarioDetails.getNombre());
 		usuario.get().setContrasenia(usuarioDetails.getContrasenia());
-		
+
 		return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.save(usuario.get()));
 	}
 
@@ -108,12 +109,10 @@ public class UsuarioController {
 	// Leer todos los Usuarios.
 	@GetMapping
 	public List<Usuario> readAll() {
-		
+
 		List<Usuario> usuarios = (List<Usuario>) usuarioService.findAll();
 
 		return usuarios;
-	}
-
-	
+	}	
 
 }
