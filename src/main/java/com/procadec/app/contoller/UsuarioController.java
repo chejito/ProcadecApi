@@ -55,7 +55,7 @@ public class UsuarioController {
 		for (Usuario usuario : usuarios) {
 			if(usuario.getNombre().equals(usuarioDetails.getNombre()) && 
 					usuario.getContrasenia().equals(usuarioDetails.getContrasenia())) {
-				return ResponseEntity.ok().build();
+				return ResponseEntity.ok(usuario);
 			}
 		}		
 
