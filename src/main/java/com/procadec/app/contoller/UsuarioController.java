@@ -36,14 +36,13 @@ public class UsuarioController {
 
 		// Comprobamos que existe el Usuario en la base de datos
 		for (Usuario usuario : usuarios) {
-			if(usuario.getEmail().equals(usuarioDetails.getEmail())) {
+			if(!usuario.getEmail().equals(usuarioDetails.getEmail())) {
+				usuarioService.save(usuarioDetails);
 				return ResponseEntity.ok(usuario);
 			}
-		}		
+		}				
 
-		usuarioService.save(usuarioDetails);
-
-		return ResponseEntity.status(HttpStatus.CREATED).build();
+		return ResponseEntity.ok().build();
 	}
 
 	// Iniciar sesión
