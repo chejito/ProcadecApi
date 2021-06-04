@@ -103,7 +103,7 @@ public class UsuarioController {
 		}
 
 		usuarioService.deleteById(id);
-		return ResponseEntity.ok().build();
+		return ResponseEntity.ok("Usuario eliminado");
 	}
 
 	// Leer todos los Usuarios.
