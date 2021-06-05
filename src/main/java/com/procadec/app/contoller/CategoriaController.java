@@ -93,8 +93,7 @@ public class CategoriaController {
 	// Leer todas las Categorías
 	@GetMapping
 	public List<Categoria> readAll() {
-		List<Categoria> categorias = StreamSupport.stream(categoriaService.findAll().spliterator(), false)
-				.collect(Collectors.toList());
+		List<Categoria> categorias = (List<Categoria>) categoriaService.findAll() ;
 
 		return categorias;
 	}
