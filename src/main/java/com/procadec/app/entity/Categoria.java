@@ -27,7 +27,7 @@ public class Categoria implements Serializable{
 	private String nombre;
 	
 	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name="producto_id")
+	@JoinColumn(name="productos")
 	private List<Producto> productos;
 
 	public Long getId() {

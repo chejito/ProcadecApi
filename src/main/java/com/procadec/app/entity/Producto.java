@@ -20,7 +20,7 @@ public class Producto implements Serializable{
 	private Long id;
 	
 	@Column(nullable = false, length = 50)
-	private String nombre;
+	private String referencia;
 	
 	@Column(nullable = false, length = 200)
 	private String descripcion;
@@ -34,14 +34,14 @@ public class Producto implements Serializable{
 
 	public void setId(Long id) {
 		this.id = id;
+	}	
+
+	public String getReferencia() {
+		return referencia;
 	}
 
-	public String getNombre() {
-		return nombre;
-	}
-
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
+	public void setReferencia(String referencia) {
+		this.referencia = referencia;
 	}
 
 	public String getDescripcion() {
