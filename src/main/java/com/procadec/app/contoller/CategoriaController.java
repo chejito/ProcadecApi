@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.procadec.app.entity.Categoria;
+import com.procadec.app.entity.Usuario;
 import com.procadec.app.service.CategoriaService;
 
 @RestController
@@ -29,8 +30,24 @@ public class CategoriaController {
 
 	// Crear nueva Categoría
 	@PostMapping
-	public ResponseEntity<?> create(@RequestBody Categoria categoria) {
-		return ResponseEntity.status(HttpStatus.CREATED).body(categoriaService.save(categoria));
+	public ResponseEntity<?> create(@RequestBody Categoria categoriaDetails) {
+
+		List<Categoria> categorias = (List<Categoria>) categoriaService.findAll();
+
+		// Comprobamos que existe la Categoria en la base de datos
+		for (Categoria categoria : categorias) {
+			if(categoria.getNombre().equals(categoriaDetails.getNombre())) {	
+
+				// Si existe no la creamos en la base de datos
+				return ResponseEntity.ok().build();
+			}
+		}
+		
+		// Si no existe, la creamos en la base de datos
+		categoriaService.save(categoriaDetails);
+		
+		return ResponseEntity.ok(categoriaDetails);		
+		
 	}
 
 	// Leer una Categoría

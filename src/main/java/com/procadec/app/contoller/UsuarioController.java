@@ -25,7 +25,25 @@ public class UsuarioController {
 	@Autowired
 	private UsuarioService usuarioService;
 
-	// Los siguientes métodos correspondientes a endpoints estarían abiertos
+	// Los siguientes métodos corresponden a endpoints
+	
+	// Iniciar sesión
+		@PostMapping("/login")
+		public ResponseEntity<?> login(@RequestBody Usuario usuarioDetails) {
+			List<Usuario> usuarios = (List<Usuario>) usuarioService.findAll();
+
+			// Comprobamos que existe el Usuario en la base de datos
+			for (Usuario usuario : usuarios) {
+				if(usuario.getNombre().equals(usuarioDetails.getNombre()) && 
+						usuario.getContrasenia().equals(usuarioDetails.getContrasenia())) {
+					
+					// Si existe en la base de datos, lo devolvemos
+					return ResponseEntity.ok(usuario);
+				}
+			}		
+
+			return ResponseEntity.notFound().build();
+		}
 
 
 	// Crear un nuevo Usuario
@@ -34,38 +52,20 @@ public class UsuarioController {
 
 		List<Usuario> usuarios = (List<Usuario>) usuarioService.findAll();
 
-		// Comprobamos que existe el Usuario en la base de datos
+		// Comprobamos si existe el Usuario en la base de datos
 		for (Usuario usuario : usuarios) {
 			if(usuario.getEmail().equals(usuarioDetails.getEmail()) || usuario.getNombre().equals(usuarioDetails.getNombre())) {				
+				
+				// Si existe no lo creamos en la base de datos
 				return ResponseEntity.ok().build();
 			}
 		}
 		
+		// Si no existe, lo creamos en la base de datos
 		usuarioService.save(usuarioDetails);
 		
 		return ResponseEntity.ok(usuarioDetails);
-	}
-
-	// Iniciar sesión
-	@PostMapping("/login")
-	public ResponseEntity<?> login(@RequestBody Usuario usuarioDetails) {
-		List<Usuario> usuarios = (List<Usuario>) usuarioService.findAll();
-
-		// Comprobamos que existe el Usuario en la base de datos
-		for (Usuario usuario : usuarios) {
-			if(usuario.getNombre().equals(usuarioDetails.getNombre()) && 
-					usuario.getContrasenia().equals(usuarioDetails.getContrasenia())) {
-				return ResponseEntity.ok(usuario);
-			}
-		}		
-
-		return ResponseEntity.notFound().build();
-
-	}
-
-	/* Los siguientes métodos correspondientes a endpoints solo se deberían utilizar para administración
-	 * En una versión futura habria que desdoblar el fichero y su ruta en /api/usuarios y /api/admin/usuarios
-	 * De momento se mantiene así para hacer pruebas. */
+	}	
 
 	// Leer un Usuario. 
 	@GetMapping("/{id}")
