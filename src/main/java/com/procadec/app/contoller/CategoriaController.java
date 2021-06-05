@@ -55,6 +55,7 @@ public class CategoriaController {
 		}
 
 		categoria.get().setNombre(categoriaDetails.getNombre());
+		categoria.get().setProductos(categoriaDetails.getProductos());
 
 		return ResponseEntity.status(HttpStatus.CREATED).body(categoriaService.save(categoria.get()));
 
