@@ -87,7 +87,7 @@ public class CategoriaController {
 		}
 
 		categoriaService.deleteById(id);
-		return ResponseEntity.ok().build();
+		return ResponseEntity.ok("Categoría eliminada");
 	}
 
 	// Leer todas las Categorías
