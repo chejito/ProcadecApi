@@ -54,7 +54,7 @@ public class ProductoController {
 			return ResponseEntity.notFound().build();
 		}
 
-		oProducto.get().setNombre(productoDetails.getNombre());
+		oProducto.get().setReferencia(productoDetails.getReferencia());
 		oProducto.get().setDescripcion(productoDetails.getDescripcion());		
 		oProducto.get().setCantidad(productoDetails.getCantidad());
 
