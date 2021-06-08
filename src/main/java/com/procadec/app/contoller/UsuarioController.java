@@ -89,6 +89,7 @@ public class UsuarioController {
 		}
 
 		usuario.get().setNombre(usuarioDetails.getNombre());
+		usuario.get().setEmail(usuarioDetails.getEmail());
 		usuario.get().setContrasenia(usuarioDetails.getContrasenia());
 
 		return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.save(usuario.get()));
